@@ -6,11 +6,11 @@ function BST() {
         this.data = data;
         this.left = left;
         this.right = right;
+        this.count = 1;
         this.show = function () {
             return this.data;
         };
     }
-
     this.root = null;
     this.insert = function (data) {
         var newNode = new Node(data, null, null);
@@ -34,6 +34,11 @@ function BST() {
                 }
             }
         }
+    };
+    this.update= function(data) {
+        var currNode = this.find(data);
+        currNode.count++;
+        return currNode;
     };
     this.inOrder = function (node) {
         if (!(node == null)) {
@@ -68,10 +73,9 @@ function BST() {
         return null;
     };
     this.remove = function (data) {
-        this.root = removeNode(this.root, data);
+        this.root = this.removeNode(this.root, data);
     };
-
-    function removeNode(node, data) {
+   this.removeNode = function(node, data) {
         if (node.data == data) {
             if (node.left == null && node.right == null) {
                 return null;
@@ -81,14 +85,16 @@ function BST() {
                 return node.left;
             } else {
                 node.data = this.getMin(node.right);
-                removeNode(node.right, node.data);
+                node.right=this.removeNode(node.right, node.data);
                 return node;
             }
         }
         else if (data < node.data) {
-            return removeNode(node.left.data);
+           node.left= this.removeNode(node.left,data);
+            return node;
         } else if (data > node.data) {
-            return removeNode(node.right.data);
+            node.right=this.removeNode(node.right,data);
+            return node;
         }
 
 
@@ -99,5 +105,9 @@ var nums = new BST();
 nums.insert(23);
 nums.insert(45);
 nums.insert(16);
-nums.remove(16);
+nums.insert(3);
+nums.insert(22);
+nums.insert(37);
+nums.insert(97);
+nums.remove(23);
 nums.inOrder(nums.root);
