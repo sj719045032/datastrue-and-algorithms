@@ -10,9 +10,13 @@ function CArray(numElements) {
     this.clear = clear;
     this.setData = setData;
     this.swap = swap;
+    this.gap=[];
     this.bubbleSort = bubbleSort;
     this.selectionSort = selectionSort;
     this.insertionSort = insertionSort;
+    this.setGap=setGap;
+    this.shellSort=shellSort;
+    this.shellSort1=shellSort1;
     for (var i = 0; i < numElements; ++i) {
         this.dataStore[i] = i;
     }
@@ -70,17 +74,17 @@ function CArray(numElements) {
         var inner;
         for (var outer = 0; outer < this.numElements - 1; outer++) {
             var min = outer;
-            /*for (var inner = outer + 1; inner < this.numElements; inner++) {
+            for (var inner = outer + 1; inner < this.numElements; inner++) {
                 if (this.dataStore[inner] < this.dataStore[min]) {
                     min = inner;
                 }
-            }*/
-            inner=outer+1;
+            }
+            /*inner=outer+1;
             while(inner<this.numElements){
                 if(this.dataStore[inner] < this.dataStore[min])
                 min = inner;
                 inner++;
-            }
+            }*/
             swap(this.dataStore, outer, min);
         }
     }
@@ -89,28 +93,73 @@ function CArray(numElements) {
         var temp, inner;
         for (var outer = 1; outer < this.numElements; outer++) {
             temp = this.dataStore[outer];
-            inner = outer;
-            while (inner > 0&&this.dataStore[inner - 1] >= temp) {
-                this.dataStore[inner] = this.dataStore[inner - 1];
-                --inner;
+            for(var inner=outer;inner>0&&this.dataStore[inner - 1] >= temp;inner--){
+                    this.dataStore[inner] = this.dataStore[inner - 1];
             }
             this.dataStore[inner] = temp;
         }
-}
+
+    }
+    function setGap(array){
+        this.gap=array;
+    }
+    function shellSort(){
+
+        for(var i=0;i<this.gap.length;i++){
+            for(var outer=this.gap[i];outer<this.dataStore.length;outer++){
+                var temp=this.dataStore[outer];
+                for(var inner=outer;inner>0&&this.dataStore[inner-this.gap[i]]>temp;inner-=this.gap[i]){
+                    this.dataStore[inner]=this.dataStore[inner-this.gap[i]];
+                }
+                this.dataStore[inner]=temp;
+            }
+        }
+    }
+    function shellSort1() {
+        var N = this.dataStore.length;
+        var h = 1;
+        while (h < N/3) {
+            h = 3* h + 1;
+        }
+        console.log(h);
+        while (h >= 1) {
+            for (var i = h; i < N; i++) {
+                for (var j = i; j >= h && this.dataStore[j] < this.dataStore[j-h];
+                     j -= h) {
+                    swap(this.dataStore, j, j-h);
+                }
+            }
+            h = (h-1)/3;
+        }
+
+    }
 }
 
-var myNums = new CArray(10000);
+var myNums = new CArray(1000000);
 
-myNums.setData();
+/*myNums.setData();
 var start=new Date().getTime();
 myNums.bubbleSort();
 var end=new Date().getTime();
 console.log("bubblesort "+(end-start)+" ms");
+myNums.setData();
 var start=new Date().getTime();
 myNums.selectionSort();
 var end=new Date().getTime();
-console.log("slectionsort "+(end-start)+" ms");
+console.log("slectionsort "+(end-start)+" ms");*/
+/*myNums.setData();
 var start=new Date().getTime();
 myNums.insertionSort();
 var end=new Date().getTime();
-console.log("insertionsort "+(end-start)+" ms");
+console.log("insertionsort "+(end-start)+" ms");*/
+/*myNums.setData();
+myNums.setGap([  701, 301, 132, 57, 23, 10, 4, 1]);
+var start=new Date().getTime();
+myNums.shellSort();
+var end=new Date().getTime();
+console.log("shellsort "+(end-start)+" ms");*/
+myNums.setData();
+var start=new Date().getTime();
+myNums.shellSort1();
+var end=new Date().getTime();
+console.log("shellsort1 "+(end-start)+" ms");
